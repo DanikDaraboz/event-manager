@@ -30,10 +30,11 @@ export function EventCard({
 
   return (
     <article
+      style={{ viewTransitionName: `event-card-${event.id}` }}
       className={
         isList
-          ? "card-shadow group flex flex-col rounded-xl border border-outline-variant bg-surface transition-colors hover:border-primary/50 sm:flex-row"
-          : "card-shadow group flex flex-col rounded-xl border border-outline-variant bg-surface transition-colors hover:border-primary/50"
+          ? "card-shadow group flex flex-col rounded-xl border border-outline-variant bg-surface transition-all duration-300 ease-out hover:border-primary/50 sm:flex-row"
+          : "card-shadow group flex flex-col rounded-xl border border-outline-variant bg-surface transition-all duration-300 ease-out hover:border-primary/50"
       }
     >
       {/* Header strip with category gradient */}

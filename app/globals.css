@@ -88,3 +88,15 @@ body {
 .animate-fade-in { animation: fadeIn 0.18s ease-out; }
 .animate-scale-in { animation: scaleIn 0.2s ease-out; }
 .animate-slide-up { animation: slideUp 0.25s ease-out; }
+
+/* Smooth morph when switching event layout modes (grid/list). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 240ms;
+  animation-timing-function: ease;
+}
+
+::view-transition-group(*) {
+  animation-duration: 260ms;
+  animation-timing-function: ease;
+}

@@ -14,6 +14,9 @@ import { DeleteConfirmModal } from "./DeleteConfirmModal";
 import { SearchInput } from "./SearchInput";
 
 type LayoutMode = "grid" | "list";
+type ViewTransitionDocument = Document & {
+  startViewTransition?: (callback: () => void) => void;
+};
 
 /** Top-level interactive dashboard. Composes every interactive piece. */
 export function EventDashboard() {
@@ -33,6 +36,18 @@ export function EventDashboard() {
   function openEdit(event: EventItem) {
     setEditingEvent(event);
     setEventModalOpen(true);
+  }
+
+  function handleLayoutModeChange(nextMode: LayoutMode) {
+    if (nextMode === layoutMode) return;
+
+    const apply = () => setLayoutMode(nextMode);
+    const doc = document as ViewTransitionDocument;
+    if (doc.startViewTransition) {
+      doc.startViewTransition(apply);
+      return;
+    }
+    apply();
   }
 
   return (
@@ -66,7 +81,7 @@ export function EventDashboard() {
 
       <FilterBar
         layoutMode={layoutMode}
-        onLayoutModeChange={setLayoutMode}
+        onLayoutModeChange={handleLayoutModeChange}
       />
 
       {/* List */}
