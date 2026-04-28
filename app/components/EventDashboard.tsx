@@ -13,6 +13,11 @@ import { EventModal } from "./EventModal";
 import { DeleteConfirmModal } from "./DeleteConfirmModal";
 import { SearchInput } from "./SearchInput";
 
+type LayoutMode = "grid" | "list";
+type ViewTransitionDocument = Document & {
+  startViewTransition?: (callback: () => void) => void;
+};
+
 /** Top-level interactive dashboard. Composes every interactive piece. */
 export function EventDashboard() {
   const tHeader = useTranslations("header");
@@ -21,6 +26,7 @@ export function EventDashboard() {
   const [editingEvent, setEditingEvent] = useState<EventItem | null>(null);
   const [eventModalOpen, setEventModalOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<EventItem | null>(null);
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid");
 
   function openCreate() {
     setEditingEvent(null);
@@ -32,22 +38,34 @@ export function EventDashboard() {
     setEventModalOpen(true);
   }
 
+  function handleLayoutModeChange(nextMode: LayoutMode) {
+    if (nextMode === layoutMode) return;
+
+    const apply = () => setLayoutMode(nextMode);
+    const doc = document as ViewTransitionDocument;
+    if (doc.startViewTransition) {
+      doc.startViewTransition(apply);
+      return;
+    }
+    apply();
+  }
+
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-5 sm:space-y-7">
       {/* Page header */}
-      <div className="flex flex-col gap-4 sm:gap-6 md:flex-row md:items-end md:justify-between">
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-on-surface sm:text-3xl">
+          <h1 className="text-2xl font-bold tracking-tight text-on-surface sm:text-3xl">
             {tHeader("title")}
           </h1>
-          <p className="mt-1 text-base text-on-surface-variant">
+          <p className="mt-1 text-sm text-on-surface-variant sm:text-base">
             {tHeader("subtitle")}
           </p>
         </div>
         <button
           type="button"
           onClick={openCreate}
-          className="inline-flex items-center justify-center gap-2 self-start rounded-lg bg-primary-container px-5 py-2.5 text-sm font-semibold text-on-primary shadow-md transition-transform hover:brightness-110 active:scale-[0.98] md:self-auto"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary-container px-5 py-2.5 text-sm font-semibold text-on-primary shadow-md transition-transform hover:brightness-110 active:scale-[0.98] sm:w-auto sm:self-start md:self-auto"
         >
           <Icon name="plus" size={18} />
           {tActions("addEvent")}
@@ -61,28 +79,48 @@ export function EventDashboard() {
         <SearchInput variant="inline" />
       </div>
 
-      <FilterBar />
+      <FilterBar
+        layoutMode={layoutMode}
+        onLayoutModeChange={handleLayoutModeChange}
+      />
 
       {/* List */}
       {!hydrated ? (
-        <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
+        <div
+          className={
+            layoutMode === "grid"
+              ? "grid gap-4 sm:gap-6 md:grid-cols-2"
+              : "grid gap-3 sm:gap-4"
+          }
+        >
           {[0, 1, 2, 3].map((i) => (
             <div
               key={i}
-              className="card-shadow h-56 animate-pulse rounded-xl border border-outline-variant bg-surface-container-low"
+              className={
+                layoutMode === "grid"
+                  ? "card-shadow h-56 animate-pulse rounded-xl border border-outline-variant bg-surface-container-low"
+                  : "card-shadow h-40 animate-pulse rounded-xl border border-outline-variant bg-surface-container-low"
+              }
             />
           ))}
         </div>
       ) : filteredEvents.length === 0 ? (
         <EmptyState onCreate={openCreate} hasEvents={events.length > 0} />
       ) : (
-        <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
+        <div
+          className={
+            layoutMode === "grid"
+              ? "grid gap-4 sm:gap-6 md:grid-cols-2"
+              : "grid gap-3 sm:gap-4"
+          }
+        >
           {filteredEvents.map((event) => (
             <EventCard
               key={event.id}
               event={event}
               onEdit={openEdit}
               onDelete={setDeleteTarget}
+              layoutMode={layoutMode}
             />
           ))}
         </div>
