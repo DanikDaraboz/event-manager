@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
+import { cookies } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { Icon } from "./Icon";
 import { LocaleSwitcher } from "./LocaleSwitcher";
+import { ThemeSwitcher, type Theme } from "./ThemeSwitcher";
 
 interface TopBarProps {
   /** Slot for the client-side search input. */
@@ -10,6 +12,9 @@ interface TopBarProps {
 
 export async function TopBar({ searchSlot }: TopBarProps) {
   const t = await getTranslations("topbar");
+  const cookieStore = await cookies();
+  const themeCookie = cookieStore.get("event-manager-theme")?.value;
+  const initialTheme: Theme = themeCookie === "dark" ? "dark" : "light";
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-outline-variant bg-surface/80 px-4 backdrop-blur-md sm:px-6 lg:pl-8 lg:pr-8">
@@ -25,6 +30,7 @@ export async function TopBar({ searchSlot }: TopBarProps) {
       <div className="flex items-center gap-3 sm:gap-5">
         <div className="hidden md:block">{searchSlot}</div>
         <LocaleSwitcher />
+        <ThemeSwitcher initialTheme={initialTheme} />
         <button
           aria-label={t("notifications")}
           className="relative rounded-full p-2 text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-primary"

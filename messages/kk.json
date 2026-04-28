@@ -15,7 +15,9 @@
     "searchPlaceholder": "Іс-шараны іздеу…",
     "searchAriaLabel": "Іс-шараны іздеу",
     "notifications": "Хабарландырулар",
-    "language": "Тіл"
+    "language": "Тіл",
+    "switchToDark": "Қараңғы тақырыпқа ауыстыру",
+    "switchToLight": "Жарық тақырыпқа ауыстыру"
   },
   "header": {
     "title": "Іс-шаралар менеджері",

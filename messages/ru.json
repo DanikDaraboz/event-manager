@@ -15,7 +15,9 @@
     "searchPlaceholder": "Поиск событий…",
     "searchAriaLabel": "Поиск событий",
     "notifications": "Уведомления",
-    "language": "Язык"
+    "language": "Язык",
+    "switchToDark": "Переключить на темную тему",
+    "switchToLight": "Переключить на светлую тему"
   },
   "header": {
     "title": "Менеджер событий",

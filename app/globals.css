@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@theme inline {
+@theme {
   /* Brand & semantic colors from the Stitch design system */
   --color-primary: #3525cd;
   --color-primary-container: #4f46e5;
@@ -43,12 +43,63 @@
     "Segoe UI", Roboto, sans-serif;
 }
 
+:root[data-theme="dark"] {
+  --color-primary: #a99bff;
+  --color-primary-container: #6f63ff;
+  --color-on-primary: #ffffff;
+  --color-primary-fixed: #2a245a;
+  --color-primary-fixed-dim: #3b3480;
+  --color-on-primary-fixed-variant: #d8d2ff;
+
+  --color-secondary: #5ee0aa;
+  --color-secondary-container: #0f4f3a;
+  --color-secondary-fixed: #174f3b;
+  --color-on-secondary-container: #8cf8cd;
+  --color-on-secondary-fixed-variant: #b8ffdf;
+
+  --color-tertiary: #ff9d73;
+  --color-tertiary-container: #66321c;
+
+  --color-error: #ff8e8e;
+  --color-error-container: #5f1f1f;
+  --color-on-error: #2d0c0c;
+  --color-on-error-container: #ffd4d4;
+
+  --color-surface: #161522;
+  --color-surface-dim: #0f0f18;
+  --color-surface-container-lowest: #12111b;
+  --color-surface-container-low: #1b1a28;
+  --color-surface-container: #222132;
+  --color-surface-container-high: #2a293d;
+  --color-surface-container-highest: #33324a;
+  --color-on-surface: #f2f1fb;
+  --color-on-surface-variant: #b6b4c8;
+
+  --color-outline: #8a889f;
+  --color-outline-variant: #3d3c52;
+
+  --color-background: #11101a;
+  --color-inverse-surface: #f2f1fb;
+}
+
 html,
 body {
   background-color: var(--color-background);
   color: var(--color-on-surface);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+/* Applied only for manual user-triggered theme changes (not on initial load). */
+.theme-transitioning,
+.theme-transitioning * {
+  transition:
+    background-color 260ms ease,
+    color 260ms ease,
+    border-color 260ms ease,
+    fill 260ms ease,
+    stroke 260ms ease,
+    box-shadow 260ms ease !important;
 }
 
 /* Slim, neutral scrollbars to match the dashboard look */
