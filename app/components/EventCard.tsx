@@ -1,8 +1,9 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import type { EventItem } from "../lib/types";
-import { formatEventDate } from "../lib/dateUtils";
 import { categoryBadgeStyles, statusBadgeStyles } from "../lib/styleHelpers";
+import { formatEventDateTime } from "../lib/dateUtils";
 import { Icon } from "./Icon";
 import { useEvents } from "./EventsProvider";
 
@@ -13,7 +14,12 @@ interface EventCardProps {
 }
 
 export function EventCard({ event, onEdit, onDelete }: EventCardProps) {
+  const tCategories = useTranslations("categories");
+  const tStatuses = useTranslations("statuses");
+  const tActions = useTranslations("actions");
   const { toggleFavorite } = useEvents();
+
+  const dateLabel = formatEventDateTime(event.date);
 
   return (
     <article className="card-shadow group flex flex-col rounded-xl border border-outline-variant bg-surface transition-colors hover:border-primary/50">
@@ -26,19 +32,21 @@ export function EventCard({ event, onEdit, onDelete }: EventCardProps) {
             <span
               className={`rounded-full px-3 py-1 text-xs font-semibold ${categoryBadgeStyles[event.category]}`}
             >
-              {event.category}
+              {tCategories(event.category)}
             </span>
             <span
               className={`rounded-full px-3 py-1 text-xs font-semibold ${statusBadgeStyles[event.status]}`}
             >
-              {event.status}
+              {tStatuses(event.status)}
             </span>
           </div>
           <button
             type="button"
             onClick={() => toggleFavorite(event.id)}
             aria-label={
-              event.favorite ? "Remove from favorites" : "Add to favorites"
+              event.favorite
+                ? tActions("favoriteRemove")
+                : tActions("favoriteAdd")
             }
             aria-pressed={event.favorite}
             className={
@@ -56,7 +64,7 @@ export function EventCard({ event, onEdit, onDelete }: EventCardProps) {
             {event.title}
           </h3>
           <p className="mt-1 text-xs font-medium text-on-surface-variant">
-            {formatEventDate(event.date)}
+            {dateLabel}
           </p>
         </div>
 
@@ -71,20 +79,20 @@ export function EventCard({ event, onEdit, onDelete }: EventCardProps) {
         <button
           type="button"
           onClick={() => onEdit(event)}
-          aria-label={`Edit ${event.title}`}
+          aria-label={tActions("editAria", { title: event.title })}
           className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-primary"
         >
           <Icon name="edit" size={16} />
-          Edit
+          {tActions("edit")}
         </button>
         <button
           type="button"
           onClick={() => onDelete(event)}
-          aria-label={`Delete ${event.title}`}
+          aria-label={tActions("deleteAria", { title: event.title })}
           className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-on-surface-variant transition-colors hover:bg-error-container hover:text-error"
         >
           <Icon name="trash" size={16} />
-          Delete
+          {tActions("delete")}
         </button>
       </div>
     </article>

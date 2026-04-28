@@ -1,7 +1,8 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import type { EventItem } from "../lib/types";
-import { formatEventDate } from "../lib/dateUtils";
+import { formatEventDateTime } from "../lib/dateUtils";
 import { Icon } from "./Icon";
 import { Modal } from "./Modal";
 import { useEvents } from "./EventsProvider";
@@ -17,6 +18,8 @@ export function DeleteConfirmModal({
   onClose,
   target,
 }: DeleteConfirmModalProps) {
+  const tDelete = useTranslations("modal.delete");
+  const tActions = useTranslations("actions");
   const { deleteEvent } = useEvents();
 
   function handleConfirm() {
@@ -25,6 +28,8 @@ export function DeleteConfirmModal({
     onClose();
   }
 
+  const dateLabel = target ? formatEventDateTime(target.date) : "";
+
   return (
     <Modal open={open} onClose={onClose} maxWidth="max-w-md">
       <div className="flex flex-col items-center px-6 pt-6 text-center">
@@ -32,11 +37,10 @@ export function DeleteConfirmModal({
           <Icon name="trash" size={26} />
         </div>
         <h3 className="text-xl font-semibold tracking-tight text-on-surface">
-          Delete event?
+          {tDelete("title")}
         </h3>
         <p className="mt-3 text-sm leading-relaxed text-on-surface-variant">
-          Are you sure you want to delete this event? This action cannot be
-          undone.
+          {tDelete("description")}
         </p>
       </div>
 
@@ -50,9 +54,7 @@ export function DeleteConfirmModal({
               <p className="truncate text-sm font-semibold text-on-surface">
                 {target.title}
               </p>
-              <p className="text-xs text-on-surface-variant">
-                {formatEventDate(target.date)}
-              </p>
+              <p className="text-xs text-on-surface-variant">{dateLabel}</p>
             </div>
           </div>
         </div>
@@ -64,14 +66,14 @@ export function DeleteConfirmModal({
           onClick={onClose}
           className="rounded-lg px-5 py-2.5 text-sm font-semibold text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface"
         >
-          Cancel
+          {tActions("cancel")}
         </button>
         <button
           type="button"
           onClick={handleConfirm}
           className="rounded-lg bg-error px-5 py-2.5 text-sm font-semibold text-on-error shadow-sm transition-transform hover:brightness-110 active:scale-[0.98]"
         >
-          Delete
+          {tActions("delete")}
         </button>
       </div>
     </Modal>

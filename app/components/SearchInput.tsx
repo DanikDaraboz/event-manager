@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Icon } from "./Icon";
 import { useEvents } from "./EventsProvider";
 
@@ -9,6 +10,7 @@ interface SearchInputProps {
 
 /** Search input for events. Updates the global filter on every keystroke. */
 export function SearchInput({ variant = "topbar" }: SearchInputProps) {
+  const t = useTranslations("topbar");
   const { filters, setSearch } = useEvents();
 
   const baseClasses =
@@ -28,8 +30,8 @@ export function SearchInput({ variant = "topbar" }: SearchInputProps) {
         type="search"
         value={filters.search}
         onChange={(e) => setSearch(e.target.value)}
-        placeholder="Search events…"
-        aria-label="Search events"
+        placeholder={t("searchPlaceholder")}
+        aria-label={t("searchAriaLabel")}
         className={baseClasses}
       />
     </div>

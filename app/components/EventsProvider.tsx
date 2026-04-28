@@ -57,9 +57,12 @@ function reducer(state: EventItem[], action: Action): EventItem[] {
 /* Toast                                                              */
 /* ------------------------------------------------------------------ */
 
+export type ToastKey = "created" | "updated" | "deleted" | "exported";
+
 export interface Toast {
   id: string;
-  message: string;
+  /** Translation key under the `toast.*` namespace. */
+  key: ToastKey;
   variant: "success" | "error";
 }
 
@@ -85,7 +88,7 @@ interface EventsContextValue {
   toggleFavorite: (id: string) => void;
   exportToJson: () => void;
   toasts: Toast[];
-  showToast: (message: string, variant?: Toast["variant"]) => void;
+  showToast: (key: ToastKey, variant?: Toast["variant"]) => void;
   dismissToast: (id: string) => void;
 }
 
@@ -135,9 +138,9 @@ export function EventsProvider({ children }: { children: ReactNode }) {
 
   /* ------------------ Toasts ------------------ */
   const showToast = useCallback(
-    (message: string, variant: Toast["variant"] = "success") => {
+    (key: ToastKey, variant: Toast["variant"] = "success") => {
       const id = generateId();
-      setToasts((t) => [...t, { id, message, variant }]);
+      setToasts((t) => [...t, { id, key, variant }]);
       setTimeout(() => {
         setToasts((t) => t.filter((toast) => toast.id !== id));
       }, 3200);
@@ -153,7 +156,7 @@ export function EventsProvider({ children }: { children: ReactNode }) {
     (input: EventInput) => {
       const event: EventItem = { ...input, id: generateId(), favorite: false };
       dispatch({ type: "add", event });
-      showToast("Event created");
+      showToast("created");
       return event;
     },
     [showToast],
@@ -164,7 +167,7 @@ export function EventsProvider({ children }: { children: ReactNode }) {
       const existing = events.find((e) => e.id === id);
       if (!existing) return;
       dispatch({ type: "update", event: { ...existing, ...input } });
-      showToast("Event updated");
+      showToast("updated");
     },
     [events, showToast],
   );
@@ -172,7 +175,7 @@ export function EventsProvider({ children }: { children: ReactNode }) {
   const deleteEvent = useCallback(
     (id: string) => {
       dispatch({ type: "delete", id });
-      showToast("Event deleted", "error");
+      showToast("deleted", "error");
     },
     [showToast],
   );
@@ -193,7 +196,7 @@ export function EventsProvider({ children }: { children: ReactNode }) {
     link.click();
     link.remove();
     URL.revokeObjectURL(url);
-    showToast("Events exported");
+    showToast("exported");
   }, [events, showToast]);
 
   /* ------------------ Filters ------------------ */

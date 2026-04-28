@@ -1,9 +1,12 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Icon } from "./Icon";
 import { useEvents } from "./EventsProvider";
 
 export function Toaster() {
+  const tToast = useTranslations("toast");
+  const tActions = useTranslations("actions");
   const { toasts, dismissToast } = useEvents();
 
   if (toasts.length === 0) return null;
@@ -36,11 +39,11 @@ export function Toaster() {
               size={16}
             />
           </span>
-          <span className="font-medium">{toast.message}</span>
+          <span className="font-medium">{tToast(toast.key)}</span>
           <button
             type="button"
             onClick={() => dismissToast(toast.id)}
-            aria-label="Dismiss notification"
+            aria-label={tActions("dismissNotification")}
             className="ml-2 rounded-full p-1 text-on-surface-variant transition-colors hover:bg-surface-container-high"
           >
             <Icon name="close" size={14} />

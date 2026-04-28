@@ -1,0 +1,111 @@
+{
+  "brand": {
+    "name": "EventPro",
+    "tagline": "Басқару платформасы"
+  },
+  "nav": {
+    "dashboard": "Басты бет",
+    "events": "Іс-шаралар",
+    "analytics": "Аналитика",
+    "settings": "Баптаулар",
+    "help": "Анықтама"
+  },
+  "topbar": {
+    "pageTitle": "Басты бет",
+    "searchPlaceholder": "Іс-шараны іздеу…",
+    "searchAriaLabel": "Іс-шараны іздеу",
+    "notifications": "Хабарландырулар",
+    "language": "Тіл"
+  },
+  "header": {
+    "title": "Іс-шаралар менеджері",
+    "subtitle": "Конференциялар, вебинарлар, кездесулер және басқа да іс-шараларды басқарыңыз."
+  },
+  "stats": {
+    "totalEvents": "Барлығы",
+    "planned": "Жоспарланған",
+    "completed": "Аяқталған",
+    "favorites": "Таңдаулылар"
+  },
+  "filters": {
+    "allEvents": "Барлығы",
+    "favoritesTab": "Таңдаулылар",
+    "viewAriaLabel": "Көрініс режимі",
+    "category": "Санат",
+    "status": "Күй",
+    "all": "Барлығы",
+    "sortAriaLabel": "Сұрыптау",
+    "sortPrefix": "Сұрыптау",
+    "sort": {
+      "dateDesc": "Күні (алдымен жаңалары)",
+      "dateAsc": "Күні (алдымен ескілері)",
+      "titleAsc": "Атауы (А–Я)",
+      "titleDesc": "Атауы (Я–А)"
+    }
+  },
+  "categories": {
+    "Conference": "Конференция",
+    "Webinar": "Вебинар",
+    "Meeting": "Кездесу",
+    "Workshop": "Воркшоп"
+  },
+  "statuses": {
+    "Planned": "Жоспарланған",
+    "Completed": "Аяқталған"
+  },
+  "actions": {
+    "addEvent": "Іс-шара қосу",
+    "edit": "Өңдеу",
+    "delete": "Жою",
+    "cancel": "Бас тарту",
+    "saveEvent": "Сақтау",
+    "saveChanges": "Өзгерістерді сақтау",
+    "exportJson": "JSON экспорт",
+    "clearFilters": "Фильтрлерді тазалау",
+    "favoriteAdd": "Таңдаулыға қосу",
+    "favoriteRemove": "Таңдаулыдан алу",
+    "editAria": "«{title}» өңдеу",
+    "deleteAria": "«{title}» жою",
+    "closeDialog": "Терезені жабу",
+    "dismissNotification": "Хабарландыруды жабу"
+  },
+  "modal": {
+    "addTitle": "Жаңа іс-шара",
+    "editTitle": "Іс-шараны өңдеу",
+    "fields": {
+      "title": "Атауы",
+      "description": "Сипаттама",
+      "descriptionOptional": "(міндетті емес)",
+      "dateTime": "Күні мен уақыты",
+      "category": "Санат",
+      "status": "Күй"
+    },
+    "placeholders": {
+      "title": "Мысалы, Жыл сайынғы өнім таныстыруы",
+      "description": "Іс-шараның мақсатын сипаттаңыз…"
+    },
+    "delete": {
+      "title": "Іс-шараны жоясыз ба?",
+      "description": "Бұл іс-шараны жойғыңыз келе ме? Бұл әрекетті қайтару мүмкін емес."
+    }
+  },
+  "validation": {
+    "titleRequired": "Атауын көрсетіңіз",
+    "titleTooShort": "Атауы кемінде 2 таңбадан тұруы керек",
+    "dateRequired": "Күні мен уақытын көрсетіңіз",
+    "dateInvalid": "Дұрыс емес күн",
+    "datePast": "Жоспарланған іс-шара өткен уақытта бола алмайды"
+  },
+  "empty": {
+    "noMatchTitle": "Фильтрлер бойынша ештеңе табылмады",
+    "noEventsTitle": "Әзірге іс-шара жоқ",
+    "noMatchHint": "Фильтрлерді өзгертіп көріңіз немесе жаңа іс-шара жасаңыз.",
+    "noEventsHint": "Бірінші іс-шараны жасаңыз да, конференциялар мен кездесулерді жоспарлай бастаңыз."
+  },
+  "toast": {
+    "created": "Іс-шара жасалды",
+    "updated": "Іс-шара жаңартылды",
+    "deleted": "Іс-шара жойылды",
+    "exported": "Іс-шаралар экспортталды"
+  }
+}

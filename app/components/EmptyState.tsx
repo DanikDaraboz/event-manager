@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Icon } from "./Icon";
 import { useEvents } from "./EventsProvider";
 
@@ -9,6 +10,8 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({ onCreate, hasEvents }: EmptyStateProps) {
+  const tEmpty = useTranslations("empty");
+  const tActions = useTranslations("actions");
   const { resetFilters } = useEvents();
 
   return (
@@ -17,12 +20,10 @@ export function EmptyState({ onCreate, hasEvents }: EmptyStateProps) {
         <Icon name="calendar-off" size={42} />
       </div>
       <h2 className="text-2xl font-semibold tracking-tight text-on-surface">
-        {hasEvents ? "No events match your filters" : "No events yet"}
+        {hasEvents ? tEmpty("noMatchTitle") : tEmpty("noEventsTitle")}
       </h2>
       <p className="mt-2 max-w-md text-sm text-on-surface-variant">
-        {hasEvents
-          ? "Try changing your filters or create a new event to get started."
-          : "Create your first event to start organising conferences, webinars, meetings and more."}
+        {hasEvents ? tEmpty("noMatchHint") : tEmpty("noEventsHint")}
       </p>
       <div className="mt-6 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
         <button
@@ -31,7 +32,7 @@ export function EmptyState({ onCreate, hasEvents }: EmptyStateProps) {
           className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary-container px-5 py-2.5 text-sm font-semibold text-on-primary shadow-md transition-transform hover:brightness-110 active:scale-[0.98]"
         >
           <Icon name="plus" size={18} />
-          Add Event
+          {tActions("addEvent")}
         </button>
         {hasEvents && (
           <button
@@ -40,7 +41,7 @@ export function EmptyState({ onCreate, hasEvents }: EmptyStateProps) {
             className="inline-flex items-center justify-center gap-2 rounded-lg border border-outline-variant bg-surface px-5 py-2.5 text-sm font-medium text-on-surface transition-colors hover:bg-surface-container-high"
           >
             <Icon name="filter-off" size={16} />
-            Clear Filters
+            {tActions("clearFilters")}
           </button>
         )}
       </div>

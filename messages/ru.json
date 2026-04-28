@@ -1,0 +1,111 @@
+{
+  "brand": {
+    "name": "EventPro",
+    "tagline": "Платформа управления"
+  },
+  "nav": {
+    "dashboard": "Панель",
+    "events": "События",
+    "analytics": "Аналитика",
+    "settings": "Настройки",
+    "help": "Справка"
+  },
+  "topbar": {
+    "pageTitle": "Панель",
+    "searchPlaceholder": "Поиск событий…",
+    "searchAriaLabel": "Поиск событий",
+    "notifications": "Уведомления",
+    "language": "Язык"
+  },
+  "header": {
+    "title": "Менеджер событий",
+    "subtitle": "Управляйте конференциями, вебинарами, встречами и многим другим."
+  },
+  "stats": {
+    "totalEvents": "Всего событий",
+    "planned": "Запланировано",
+    "completed": "Завершено",
+    "favorites": "Избранное"
+  },
+  "filters": {
+    "allEvents": "Все события",
+    "favoritesTab": "Избранное",
+    "viewAriaLabel": "Режим просмотра",
+    "category": "Категория",
+    "status": "Статус",
+    "all": "Все",
+    "sortAriaLabel": "Сортировка",
+    "sortPrefix": "Сортировка",
+    "sort": {
+      "dateDesc": "Дата (сначала новые)",
+      "dateAsc": "Дата (сначала старые)",
+      "titleAsc": "Название (А–Я)",
+      "titleDesc": "Название (Я–А)"
+    }
+  },
+  "categories": {
+    "Conference": "Конференция",
+    "Webinar": "Вебинар",
+    "Meeting": "Встреча",
+    "Workshop": "Воркшоп"
+  },
+  "statuses": {
+    "Planned": "Запланировано",
+    "Completed": "Завершено"
+  },
+  "actions": {
+    "addEvent": "Добавить событие",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "cancel": "Отмена",
+    "saveEvent": "Сохранить",
+    "saveChanges": "Сохранить изменения",
+    "exportJson": "Экспорт в JSON",
+    "clearFilters": "Сбросить фильтры",
+    "favoriteAdd": "Добавить в избранное",
+    "favoriteRemove": "Убрать из избранного",
+    "editAria": "Редактировать «{title}»",
+    "deleteAria": "Удалить «{title}»",
+    "closeDialog": "Закрыть диалог",
+    "dismissNotification": "Закрыть уведомление"
+  },
+  "modal": {
+    "addTitle": "Новое событие",
+    "editTitle": "Редактирование события",
+    "fields": {
+      "title": "Название",
+      "description": "Описание",
+      "descriptionOptional": "(необязательно)",
+      "dateTime": "Дата и время",
+      "category": "Категория",
+      "status": "Статус"
+    },
+    "placeholders": {
+      "title": "Например, Ежегодная презентация продукта",
+      "description": "Опишите цель события…"
+    },
+    "delete": {
+      "title": "Удалить событие?",
+      "description": "Вы уверены, что хотите удалить это событие? Это действие нельзя отменить."
+    }
+  },
+  "validation": {
+    "titleRequired": "Укажите название",
+    "titleTooShort": "Название должно содержать минимум 2 символа",
+    "dateRequired": "Укажите дату и время",
+    "dateInvalid": "Некорректная дата",
+    "datePast": "Запланированное событие не может быть в прошлом"
+  },
+  "empty": {
+    "noMatchTitle": "По фильтрам ничего не найдено",
+    "noEventsTitle": "Пока нет событий",
+    "noMatchHint": "Попробуйте изменить фильтры или создать новое событие.",
+    "noEventsHint": "Создайте первое событие, чтобы начать планировать конференции, вебинары и встречи."
+  },
+  "toast": {
+    "created": "Событие создано",
+    "updated": "Событие обновлено",
+    "deleted": "Событие удалено",
+    "exported": "События экспортированы"
+  }
+}

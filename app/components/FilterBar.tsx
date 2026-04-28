@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Icon } from "./Icon";
 import { useEvents } from "./EventsProvider";
 import { EVENT_CATEGORIES, EVENT_STATUSES } from "../lib/types";
@@ -9,14 +10,25 @@ import type {
   StatusFilter,
 } from "../lib/types";
 
-const sortLabels: Record<SortOption, string> = {
-  "date-desc": "Date (newest first)",
-  "date-asc": "Date (oldest first)",
-  "title-asc": "Title (A–Z)",
-  "title-desc": "Title (Z–A)",
+const sortOptions: SortOption[] = [
+  "date-desc",
+  "date-asc",
+  "title-asc",
+  "title-desc",
+];
+
+const sortKeyMap: Record<SortOption, "dateDesc" | "dateAsc" | "titleAsc" | "titleDesc"> = {
+  "date-desc": "dateDesc",
+  "date-asc": "dateAsc",
+  "title-asc": "titleAsc",
+  "title-desc": "titleDesc",
 };
 
 export function FilterBar() {
+  const tFilters = useTranslations("filters");
+  const tCategories = useTranslations("categories");
+  const tStatuses = useTranslations("statuses");
+  const tActions = useTranslations("actions");
   const {
     filters,
     setCategory,
@@ -35,7 +47,7 @@ export function FilterBar() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div
           role="tablist"
-          aria-label="Event view"
+          aria-label={tFilters("viewAriaLabel")}
           className="inline-flex items-center gap-1 rounded-lg bg-surface-container-high p-1"
         >
           <button
@@ -48,7 +60,7 @@ export function FilterBar() {
                 : "rounded-md px-4 py-1.5 text-sm font-medium text-on-surface-variant transition-colors hover:text-on-surface"
             }
           >
-            All Events
+            {tFilters("allEvents")}
           </button>
           <button
             role="tab"
@@ -60,21 +72,21 @@ export function FilterBar() {
                 : "flex items-center gap-1.5 rounded-md px-4 py-1.5 text-sm font-medium text-on-surface-variant transition-colors hover:text-on-surface"
             }
           >
-            <Icon name="heart" size={14} /> Favorites
+            <Icon name="heart" size={14} /> {tFilters("favoritesTab")}
           </button>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative">
             <select
-              aria-label="Sort by"
+              aria-label={tFilters("sortAriaLabel")}
               value={filters.sort}
               onChange={(e) => setSort(e.target.value as SortOption)}
               className="appearance-none rounded-lg border border-outline-variant bg-surface px-4 py-2 pr-10 text-sm font-medium text-on-surface focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             >
-              {(Object.keys(sortLabels) as SortOption[]).map((opt) => (
+              {sortOptions.map((opt) => (
                 <option key={opt} value={opt}>
-                  Sort: {sortLabels[opt]}
+                  {tFilters("sortPrefix")}: {tFilters(`sort.${sortKeyMap[opt]}`)}
                 </option>
               ))}
             </select>
@@ -89,7 +101,7 @@ export function FilterBar() {
             className="inline-flex items-center gap-2 rounded-lg border border-outline-variant bg-surface px-4 py-2 text-sm font-medium text-on-surface transition-colors hover:bg-surface-container-high"
           >
             <Icon name="download" size={16} />
-            Export JSON
+            {tActions("exportJson")}
           </button>
         </div>
       </div>
@@ -98,10 +110,12 @@ export function FilterBar() {
       <div className="flex flex-col gap-3 border-t border-outline-variant pt-4 lg:flex-row lg:items-center lg:gap-6">
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
           <span className="shrink-0 text-xs font-medium uppercase tracking-wider text-on-surface-variant">
-            Category:
+            {tFilters("category")}:
           </span>
           {categoryOptions.map((option) => {
             const active = filters.category === option;
+            const label =
+              option === "All" ? tFilters("all") : tCategories(option);
             return (
               <button
                 key={option}
@@ -112,7 +126,7 @@ export function FilterBar() {
                     : "shrink-0 rounded-full border border-outline-variant bg-surface px-4 py-1 text-xs font-medium text-on-surface-variant transition-colors hover:border-primary hover:text-on-surface"
                 }
               >
-                {option}
+                {label}
               </button>
             );
           })}
@@ -122,10 +136,12 @@ export function FilterBar() {
 
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
           <span className="shrink-0 text-xs font-medium uppercase tracking-wider text-on-surface-variant">
-            Status:
+            {tFilters("status")}:
           </span>
           {statusOptions.map((option) => {
             const active = filters.status === option;
+            const label =
+              option === "All" ? tFilters("all") : tStatuses(option);
             return (
               <button
                 key={option}
@@ -136,7 +152,7 @@ export function FilterBar() {
                     : "shrink-0 rounded-full border border-outline-variant bg-surface px-4 py-1 text-xs font-medium text-on-surface-variant transition-colors hover:border-primary hover:text-on-surface"
                 }
               >
-                {option}
+                {label}
               </button>
             );
           })}

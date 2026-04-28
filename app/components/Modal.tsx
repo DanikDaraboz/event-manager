@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, type ReactNode } from "react";
+import { useTranslations } from "next-intl";
 import { Icon } from "./Icon";
 
 interface ModalProps {
@@ -23,6 +24,8 @@ export function Modal({
   maxWidth = "max-w-lg",
   hideCloseButton = false,
 }: ModalProps) {
+  const tActions = useTranslations("actions");
+
   useEffect(() => {
     if (!open) return;
     const handler = (e: KeyboardEvent) => {
@@ -60,7 +63,7 @@ export function Modal({
               <button
                 type="button"
                 onClick={onClose}
-                aria-label="Close dialog"
+                aria-label={tActions("closeDialog")}
                 className="rounded-full p-1 text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface"
               >
                 <Icon name="close" size={20} />

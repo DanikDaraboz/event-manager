@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, type SubmitEventHandler } from "react";
+import { useTranslations } from "next-intl";
 import {
   fromDatetimeLocalValue,
   isPastDate,
@@ -33,9 +34,17 @@ interface FormState {
   status: EventStatus;
 }
 
+/** Validation errors expressed as message keys, translated at render time. */
+type ValidationKey =
+  | "titleRequired"
+  | "titleTooShort"
+  | "dateRequired"
+  | "dateInvalid"
+  | "datePast";
+
 interface FormErrors {
-  title?: string;
-  date?: string;
+  title?: ValidationKey;
+  date?: ValidationKey;
 }
 
 const blank: FormState = {
@@ -57,7 +66,36 @@ function buildFormState(event: EventItem | null): FormState {
   };
 }
 
+function validate(state: FormState): FormErrors {
+  const next: FormErrors = {};
+  if (!state.title.trim()) {
+    next.title = "titleRequired";
+  } else if (state.title.trim().length < 2) {
+    next.title = "titleTooShort";
+  }
+  if (!state.date) {
+    next.date = "dateRequired";
+  } else {
+    const iso = fromDatetimeLocalValue(state.date);
+    if (!iso) {
+      next.date = "dateInvalid";
+    } else if (state.status === "Planned" && isPastDate(iso)) {
+      // Only enforced for planned events; completed ones are allowed in the past.
+      next.date = "datePast";
+    }
+  }
+  return next;
+}
+
 export function EventModal({ open, onClose, initialEvent }: EventModalProps) {
+  const tModal = useTranslations("modal");
+  const tFields = useTranslations("modal.fields");
+  const tPlaceholders = useTranslations("modal.placeholders");
+  const tValidation = useTranslations("validation");
+  const tCategories = useTranslations("categories");
+  const tStatuses = useTranslations("statuses");
+  const tActions = useTranslations("actions");
+
   const { addEvent, updateEvent } = useEvents();
   const [form, setForm] = useState<FormState>(() => buildFormState(initialEvent));
   const [errors, setErrors] = useState<FormErrors>({});
@@ -65,7 +103,6 @@ export function EventModal({ open, onClose, initialEvent }: EventModalProps) {
 
   // "Adjusting state during render" — the React 19 idiomatic way to reset
   // form state when the modal is opened or the target event changes.
-  // See https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
   const [snapshot, setSnapshot] = useState({ open, eventId: initialEvent?.id });
   if (snapshot.open !== open || snapshot.eventId !== initialEvent?.id) {
     setSnapshot({ open, eventId: initialEvent?.id });
@@ -76,29 +113,7 @@ export function EventModal({ open, onClose, initialEvent }: EventModalProps) {
     }
   }
 
-  function validate(state: FormState): FormErrors {
-    const next: FormErrors = {};
-    if (!state.title.trim()) {
-      next.title = "Title is required";
-    } else if (state.title.trim().length < 2) {
-      next.title = "Title must be at least 2 characters";
-    }
-    if (!state.date) {
-      next.date = "Date and time is required";
-    } else {
-      const iso = fromDatetimeLocalValue(state.date);
-      if (!iso) {
-        next.date = "Invalid date";
-      } else if (state.status === "Planned" && isPastDate(iso)) {
-        // We only enforce "no past dates" for planned events; completed events
-        // are allowed to be in the past since that reflects reality.
-        next.date = "Planned events cannot be in the past";
-      }
-    }
-    return next;
-  }
-
-  function handleSubmit(e: FormEvent) {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     setSubmitted(true);
     const validation = validate(form);
@@ -119,9 +134,10 @@ export function EventModal({ open, onClose, initialEvent }: EventModalProps) {
       addEvent(payload);
     }
     onClose();
-  }
+  };
 
-  // Re-validate when the user edits already-submitted fields for live feedback.
+  // Re-validate on each keystroke once the form has been submitted, so the
+  // user sees errors clearing live as they fix them.
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => {
       const next = { ...prev, [key]: value };
@@ -133,20 +149,28 @@ export function EventModal({ open, onClose, initialEvent }: EventModalProps) {
   const isEdit = Boolean(initialEvent);
 
   return (
-    <Modal open={open} onClose={onClose} title={isEdit ? "Edit Event" : "Add New Event"}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={isEdit ? tModal("editTitle") : tModal("addTitle")}
+    >
       <form onSubmit={handleSubmit} noValidate>
         <div className="space-y-4 px-6 py-5">
           {/* Title */}
           <div className="space-y-1">
-            <label htmlFor="event-title" className="block text-sm font-semibold text-on-surface">
-              Title <span className="font-bold text-error">*</span>
+            <label
+              htmlFor="event-title"
+              className="block text-sm font-semibold text-on-surface"
+            >
+              {tFields("title")}{" "}
+              <span className="font-bold text-error">*</span>
             </label>
             <input
               id="event-title"
               type="text"
               value={form.title}
               onChange={(e) => update("title", e.target.value)}
-              placeholder="e.g. Annual Product Keynote"
+              placeholder={tPlaceholders("title")}
               aria-invalid={Boolean(errors.title)}
               aria-describedby={errors.title ? "event-title-error" : undefined}
               className={
@@ -156,33 +180,45 @@ export function EventModal({ open, onClose, initialEvent }: EventModalProps) {
               }
             />
             {errors.title && (
-              <p id="event-title-error" className="flex items-center gap-1 text-xs font-medium text-error">
+              <p
+                id="event-title-error"
+                className="flex items-center gap-1 text-xs font-medium text-error"
+              >
                 <Icon name="alert" size={14} />
-                {errors.title}
+                {tValidation(errors.title)}
               </p>
             )}
           </div>
 
           {/* Description */}
           <div className="space-y-1">
-            <label htmlFor="event-description" className="block text-sm font-semibold text-on-surface">
-              Description{" "}
-              <span className="font-normal text-on-surface-variant">(Optional)</span>
+            <label
+              htmlFor="event-description"
+              className="block text-sm font-semibold text-on-surface"
+            >
+              {tFields("description")}{" "}
+              <span className="font-normal text-on-surface-variant">
+                {tFields("descriptionOptional")}
+              </span>
             </label>
             <textarea
               id="event-description"
               rows={3}
               value={form.description}
               onChange={(e) => update("description", e.target.value)}
-              placeholder="Describe the purpose of this event…"
+              placeholder={tPlaceholders("description")}
               className="w-full resize-none rounded-lg border border-outline-variant bg-surface px-4 py-2.5 text-sm transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
 
           {/* Date */}
           <div className="space-y-1">
-            <label htmlFor="event-date" className="block text-sm font-semibold text-on-surface">
-              Date and Time <span className="font-bold text-error">*</span>
+            <label
+              htmlFor="event-date"
+              className="block text-sm font-semibold text-on-surface"
+            >
+              {tFields("dateTime")}{" "}
+              <span className="font-bold text-error">*</span>
             </label>
             <input
               id="event-date"
@@ -198,9 +234,12 @@ export function EventModal({ open, onClose, initialEvent }: EventModalProps) {
               }
             />
             {errors.date && (
-              <p id="event-date-error" className="flex items-center gap-1 text-xs font-medium text-error">
+              <p
+                id="event-date-error"
+                className="flex items-center gap-1 text-xs font-medium text-error"
+              >
                 <Icon name="calendar-off" size={14} />
-                {errors.date}
+                {tValidation(errors.date)}
               </p>
             )}
           </div>
@@ -208,19 +247,24 @@ export function EventModal({ open, onClose, initialEvent }: EventModalProps) {
           {/* Category + Status */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-1">
-              <label htmlFor="event-category" className="block text-sm font-semibold text-on-surface">
-                Category
+              <label
+                htmlFor="event-category"
+                className="block text-sm font-semibold text-on-surface"
+              >
+                {tFields("category")}
               </label>
               <div className="relative">
                 <select
                   id="event-category"
                   value={form.category}
-                  onChange={(e) => update("category", e.target.value as EventCategory)}
+                  onChange={(e) =>
+                    update("category", e.target.value as EventCategory)
+                  }
                   className="w-full appearance-none rounded-lg border border-outline-variant bg-surface px-4 py-2.5 pr-10 text-sm transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                 >
                   {EVENT_CATEGORIES.map((c) => (
                     <option key={c} value={c}>
-                      {c}
+                      {tCategories(c)}
                     </option>
                   ))}
                 </select>
@@ -232,19 +276,24 @@ export function EventModal({ open, onClose, initialEvent }: EventModalProps) {
               </div>
             </div>
             <div className="space-y-1">
-              <label htmlFor="event-status" className="block text-sm font-semibold text-on-surface">
-                Status
+              <label
+                htmlFor="event-status"
+                className="block text-sm font-semibold text-on-surface"
+              >
+                {tFields("status")}
               </label>
               <div className="relative">
                 <select
                   id="event-status"
                   value={form.status}
-                  onChange={(e) => update("status", e.target.value as EventStatus)}
+                  onChange={(e) =>
+                    update("status", e.target.value as EventStatus)
+                  }
                   className="w-full appearance-none rounded-lg border border-outline-variant bg-surface px-4 py-2.5 pr-10 text-sm transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                 >
                   {EVENT_STATUSES.map((s) => (
                     <option key={s} value={s}>
-                      {s}
+                      {tStatuses(s)}
                     </option>
                   ))}
                 </select>
@@ -264,13 +313,13 @@ export function EventModal({ open, onClose, initialEvent }: EventModalProps) {
             onClick={onClose}
             className="rounded-lg px-4 py-2 text-sm font-semibold text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface"
           >
-            Cancel
+            {tActions("cancel")}
           </button>
           <button
             type="submit"
             className="rounded-lg bg-primary-container px-5 py-2 text-sm font-semibold text-on-primary shadow-md transition-transform hover:brightness-110 active:scale-[0.98]"
           >
-            {isEdit ? "Save Changes" : "Save Event"}
+            {isEdit ? tActions("saveChanges") : tActions("saveEvent")}
           </button>
         </div>
       </form>
