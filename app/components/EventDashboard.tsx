@@ -51,21 +51,21 @@ export function EventDashboard() {
   }
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-5 sm:space-y-7">
       {/* Page header */}
-      <div className="flex flex-col gap-4 sm:gap-6 md:flex-row md:items-end md:justify-between">
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-on-surface sm:text-3xl">
+          <h1 className="text-2xl font-bold tracking-tight text-on-surface sm:text-3xl">
             {tHeader("title")}
           </h1>
-          <p className="mt-1 text-base text-on-surface-variant">
+          <p className="mt-1 text-sm text-on-surface-variant sm:text-base">
             {tHeader("subtitle")}
           </p>
         </div>
         <button
           type="button"
           onClick={openCreate}
-          className="inline-flex items-center justify-center gap-2 self-start rounded-lg bg-primary-container px-5 py-2.5 text-sm font-semibold text-on-primary shadow-md transition-transform hover:brightness-110 active:scale-[0.98] md:self-auto"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary-container px-5 py-2.5 text-sm font-semibold text-on-primary shadow-md transition-transform hover:brightness-110 active:scale-[0.98] sm:w-auto sm:self-start md:self-auto"
         >
           <Icon name="plus" size={18} />
           {tActions("addEvent")}

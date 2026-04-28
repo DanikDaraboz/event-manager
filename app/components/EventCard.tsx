@@ -116,8 +116,8 @@ export function EventCard({
       <div
         className={
           isList
-            ? "flex items-center justify-end gap-1 rounded-b-xl border-t border-outline-variant bg-surface-container-lowest px-3 py-2 sm:rounded-bl-none sm:rounded-r-xl sm:border-l sm:border-t-0"
-            : "flex items-center justify-end gap-1 rounded-b-xl border-t border-outline-variant bg-surface-container-lowest px-4 py-3"
+            ? "flex flex-wrap items-center justify-end gap-1 rounded-b-xl border-t border-outline-variant bg-surface-container-lowest px-3 py-2 sm:flex-nowrap sm:rounded-bl-none sm:rounded-r-xl sm:border-l sm:border-t-0"
+            : "flex flex-wrap items-center justify-end gap-1 rounded-b-xl border-t border-outline-variant bg-surface-container-lowest px-4 py-3 sm:flex-nowrap"
         }
       >
         <button
