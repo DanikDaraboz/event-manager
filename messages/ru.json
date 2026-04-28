@@ -31,9 +31,14 @@
     "allEvents": "Все события",
     "favoritesTab": "Избранное",
     "viewAriaLabel": "Режим просмотра",
+    "layoutAriaLabel": "Макет списка событий",
     "category": "Категория",
     "status": "Статус",
     "all": "Все",
+    "layout": {
+      "grid": "Сетка",
+      "list": "Список"
+    },
     "sortAriaLabel": "Сортировка",
     "sortPrefix": "Сортировка",
     "sort": {

@@ -31,9 +31,14 @@
     "allEvents": "Барлығы",
     "favoritesTab": "Таңдаулылар",
     "viewAriaLabel": "Көрініс режимі",
+    "layoutAriaLabel": "Оқиғалар көрінісінің макеті",
     "category": "Санат",
     "status": "Күй",
     "all": "Барлығы",
+    "layout": {
+      "grid": "Тор",
+      "list": "Тізім"
+    },
     "sortAriaLabel": "Сұрыптау",
     "sortPrefix": "Сұрыптау",
     "sort": {

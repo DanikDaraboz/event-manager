@@ -13,6 +13,8 @@ import { EventModal } from "./EventModal";
 import { DeleteConfirmModal } from "./DeleteConfirmModal";
 import { SearchInput } from "./SearchInput";
 
+type LayoutMode = "grid" | "list";
+
 /** Top-level interactive dashboard. Composes every interactive piece. */
 export function EventDashboard() {
   const tHeader = useTranslations("header");
@@ -21,6 +23,7 @@ export function EventDashboard() {
   const [editingEvent, setEditingEvent] = useState<EventItem | null>(null);
   const [eventModalOpen, setEventModalOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<EventItem | null>(null);
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid");
 
   function openCreate() {
     setEditingEvent(null);
@@ -61,28 +64,48 @@ export function EventDashboard() {
         <SearchInput variant="inline" />
       </div>
 
-      <FilterBar />
+      <FilterBar
+        layoutMode={layoutMode}
+        onLayoutModeChange={setLayoutMode}
+      />
 
       {/* List */}
       {!hydrated ? (
-        <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
+        <div
+          className={
+            layoutMode === "grid"
+              ? "grid gap-4 sm:gap-6 md:grid-cols-2"
+              : "grid gap-3 sm:gap-4"
+          }
+        >
           {[0, 1, 2, 3].map((i) => (
             <div
               key={i}
-              className="card-shadow h-56 animate-pulse rounded-xl border border-outline-variant bg-surface-container-low"
+              className={
+                layoutMode === "grid"
+                  ? "card-shadow h-56 animate-pulse rounded-xl border border-outline-variant bg-surface-container-low"
+                  : "card-shadow h-40 animate-pulse rounded-xl border border-outline-variant bg-surface-container-low"
+              }
             />
           ))}
         </div>
       ) : filteredEvents.length === 0 ? (
         <EmptyState onCreate={openCreate} hasEvents={events.length > 0} />
       ) : (
-        <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
+        <div
+          className={
+            layoutMode === "grid"
+              ? "grid gap-4 sm:gap-6 md:grid-cols-2"
+              : "grid gap-3 sm:gap-4"
+          }
+        >
           {filteredEvents.map((event) => (
             <EventCard
               key={event.id}
               event={event}
               onEdit={openEdit}
               onDelete={setDeleteTarget}
+              layoutMode={layoutMode}
             />
           ))}
         </div>

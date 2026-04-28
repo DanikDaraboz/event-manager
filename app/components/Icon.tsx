@@ -23,7 +23,9 @@ export type IconName =
   | "alert"
   | "calendar-off"
   | "filter-off"
-  | "download";
+  | "download"
+  | "layout-grid"
+  | "layout-list";
 
 interface IconProps extends Omit<SVGProps<SVGSVGElement>, "name"> {
   name: IconName;
@@ -216,6 +218,23 @@ export function Icon({ name, size = 20, ...props }: IconProps) {
           <path d="M12 4v12" />
           <path d="m7 11 5 5 5-5" />
           <path d="M5 20h14" />
+        </svg>
+      );
+    case "layout-grid":
+      return (
+        <svg {...common}>
+          <rect x="3" y="3" width="8" height="8" rx="1.5" />
+          <rect x="13" y="3" width="8" height="8" rx="1.5" />
+          <rect x="3" y="13" width="8" height="8" rx="1.5" />
+          <rect x="13" y="13" width="8" height="8" rx="1.5" />
+        </svg>
+      );
+    case "layout-list":
+      return (
+        <svg {...common}>
+          <rect x="4" y="5" width="16" height="3" rx="1.5" />
+          <rect x="4" y="10.5" width="16" height="3" rx="1.5" />
+          <rect x="4" y="16" width="16" height="3" rx="1.5" />
         </svg>
       );
   }

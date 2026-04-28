@@ -31,9 +31,14 @@
     "allEvents": "All Events",
     "favoritesTab": "Favorites",
     "viewAriaLabel": "Event view",
+    "layoutAriaLabel": "Event layout",
     "category": "Category",
     "status": "Status",
     "all": "All",
+    "layout": {
+      "grid": "Grid",
+      "list": "List"
+    },
     "sortAriaLabel": "Sort by",
     "sortPrefix": "Sort",
     "sort": {

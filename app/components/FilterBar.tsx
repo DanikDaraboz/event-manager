@@ -10,6 +10,8 @@ import type {
   StatusFilter,
 } from "../lib/types";
 
+type LayoutMode = "grid" | "list";
+
 const sortOptions: SortOption[] = [
   "date-desc",
   "date-asc",
@@ -24,7 +26,12 @@ const sortKeyMap: Record<SortOption, "dateDesc" | "dateAsc" | "titleAsc" | "titl
   "title-desc": "titleDesc",
 };
 
-export function FilterBar() {
+interface FilterBarProps {
+  layoutMode: LayoutMode;
+  onLayoutModeChange: (mode: LayoutMode) => void;
+}
+
+export function FilterBar({ layoutMode, onLayoutModeChange }: FilterBarProps) {
   const tFilters = useTranslations("filters");
   const tCategories = useTranslations("categories");
   const tStatuses = useTranslations("statuses");
@@ -77,6 +84,38 @@ export function FilterBar() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <div
+            role="group"
+            aria-label={tFilters("layoutAriaLabel")}
+            className="inline-flex items-center gap-1 rounded-lg border border-outline-variant bg-surface p-1"
+          >
+            <button
+              type="button"
+              aria-pressed={layoutMode === "grid"}
+              onClick={() => onLayoutModeChange("grid")}
+              className={
+                layoutMode === "grid"
+                  ? "inline-flex items-center gap-1.5 rounded-md bg-surface-container-high px-3 py-1.5 text-xs font-semibold text-on-surface"
+                  : "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-on-surface-variant transition-colors hover:text-on-surface"
+              }
+            >
+              <Icon name="layout-grid" size={14} />
+              {tFilters("layout.grid")}
+            </button>
+            <button
+              type="button"
+              aria-pressed={layoutMode === "list"}
+              onClick={() => onLayoutModeChange("list")}
+              className={
+                layoutMode === "list"
+                  ? "inline-flex items-center gap-1.5 rounded-md bg-surface-container-high px-3 py-1.5 text-xs font-semibold text-on-surface"
+                  : "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-on-surface-variant transition-colors hover:text-on-surface"
+              }
+            >
+              <Icon name="layout-list" size={14} />
+              {tFilters("layout.list")}
+            </button>
+          </div>
           <div className="relative">
             <select
               aria-label={tFilters("sortAriaLabel")}
