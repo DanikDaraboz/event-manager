@@ -48,11 +48,11 @@ export function StatsCards() {
   const { stats } = useEvents();
 
   return (
-    <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-6">
       {cards.map((card) => (
         <div
           key={card.statKey}
-          className="card-shadow flex items-center gap-4 rounded-xl border border-outline-variant bg-surface p-4 sm:p-6"
+          className="card-shadow flex items-center gap-3 rounded-xl border border-outline-variant bg-surface p-4 sm:gap-4 sm:p-5"
         >
           <div
             className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${card.iconBg} ${card.iconColor}`}
@@ -63,7 +63,7 @@ export function StatsCards() {
             <p className="text-xs font-medium uppercase tracking-wider text-on-surface-variant">
               {t(card.labelKey)}
             </p>
-            <p className="mt-1 text-2xl font-semibold tracking-tight text-on-surface sm:text-3xl">
+            <p className="mt-1 text-2xl font-semibold tracking-tight text-on-surface sm:text-2xl lg:text-3xl">
               {stats[card.statKey]}
             </p>
           </div>

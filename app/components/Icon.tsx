@@ -23,7 +23,11 @@ export type IconName =
   | "alert"
   | "calendar-off"
   | "filter-off"
-  | "download";
+  | "download"
+  | "layout-grid"
+  | "layout-list"
+  | "sun"
+  | "moon";
 
 interface IconProps extends Omit<SVGProps<SVGSVGElement>, "name"> {
   name: IconName;
@@ -216,6 +220,36 @@ export function Icon({ name, size = 20, ...props }: IconProps) {
           <path d="M12 4v12" />
           <path d="m7 11 5 5 5-5" />
           <path d="M5 20h14" />
+        </svg>
+      );
+    case "layout-grid":
+      return (
+        <svg {...common}>
+          <rect x="3" y="3" width="8" height="8" rx="1.5" />
+          <rect x="13" y="3" width="8" height="8" rx="1.5" />
+          <rect x="3" y="13" width="8" height="8" rx="1.5" />
+          <rect x="13" y="13" width="8" height="8" rx="1.5" />
+        </svg>
+      );
+    case "layout-list":
+      return (
+        <svg {...common}>
+          <rect x="4" y="5" width="16" height="3" rx="1.5" />
+          <rect x="4" y="10.5" width="16" height="3" rx="1.5" />
+          <rect x="4" y="16" width="16" height="3" rx="1.5" />
+        </svg>
+      );
+    case "sun":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" />
+        </svg>
+      );
+    case "moon":
+      return (
+        <svg {...common}>
+          <path d="M21 13.2A8.5 8.5 0 1 1 10.8 3a7 7 0 1 0 10.2 10.2Z" />
         </svg>
       );
   }

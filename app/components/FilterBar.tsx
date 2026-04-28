@@ -10,6 +10,8 @@ import type {
   StatusFilter,
 } from "../lib/types";
 
+type LayoutMode = "grid" | "list";
+
 const sortOptions: SortOption[] = [
   "date-desc",
   "date-asc",
@@ -24,7 +26,12 @@ const sortKeyMap: Record<SortOption, "dateDesc" | "dateAsc" | "titleAsc" | "titl
   "title-desc": "titleDesc",
 };
 
-export function FilterBar() {
+interface FilterBarProps {
+  layoutMode: LayoutMode;
+  onLayoutModeChange: (mode: LayoutMode) => void;
+}
+
+export function FilterBar({ layoutMode, onLayoutModeChange }: FilterBarProps) {
   const tFilters = useTranslations("filters");
   const tCategories = useTranslations("categories");
   const tStatuses = useTranslations("statuses");
@@ -42,13 +49,13 @@ export function FilterBar() {
   const statusOptions: StatusFilter[] = ["All", ...EVENT_STATUSES];
 
   return (
-    <div className="flex flex-col gap-4 rounded-xl bg-surface-container-low p-4 sm:p-5">
+    <div className="flex flex-col gap-4 rounded-xl bg-surface-container-low p-3 sm:p-5">
       {/* Tabs + sort + export */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
         <div
           role="tablist"
           aria-label={tFilters("viewAriaLabel")}
-          className="inline-flex items-center gap-1 rounded-lg bg-surface-container-high p-1"
+          className="inline-flex w-full items-center gap-1 overflow-x-auto rounded-lg bg-surface-container-high p-1 xl:w-auto"
         >
           <button
             role="tab"
@@ -76,13 +83,45 @@ export function FilterBar() {
           </button>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative">
+        <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 xl:flex xl:w-auto xl:flex-wrap xl:items-center">
+          <div
+            role="group"
+            aria-label={tFilters("layoutAriaLabel")}
+            className="hidden items-center justify-center gap-1 rounded-lg border border-outline-variant bg-surface p-1 sm:justify-start md:inline-flex"
+          >
+            <button
+              type="button"
+              aria-pressed={layoutMode === "grid"}
+              onClick={() => onLayoutModeChange("grid")}
+              className={
+                layoutMode === "grid"
+                  ? "inline-flex items-center gap-1.5 rounded-md bg-surface-container-high px-3 py-1.5 text-xs font-semibold text-on-surface"
+                  : "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-on-surface-variant transition-colors hover:text-on-surface"
+              }
+            >
+              <Icon name="layout-grid" size={14} />
+              {tFilters("layout.grid")}
+            </button>
+            <button
+              type="button"
+              aria-pressed={layoutMode === "list"}
+              onClick={() => onLayoutModeChange("list")}
+              className={
+                layoutMode === "list"
+                  ? "inline-flex items-center gap-1.5 rounded-md bg-surface-container-high px-3 py-1.5 text-xs font-semibold text-on-surface"
+                  : "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-on-surface-variant transition-colors hover:text-on-surface"
+              }
+            >
+              <Icon name="layout-list" size={14} />
+              {tFilters("layout.list")}
+            </button>
+          </div>
+          <div className="relative sm:col-span-2 xl:col-span-1">
             <select
               aria-label={tFilters("sortAriaLabel")}
               value={filters.sort}
               onChange={(e) => setSort(e.target.value as SortOption)}
-              className="appearance-none rounded-lg border border-outline-variant bg-surface px-4 py-2 pr-10 text-sm font-medium text-on-surface focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="w-full appearance-none rounded-lg border border-outline-variant bg-surface px-4 py-2 pr-10 text-sm font-medium text-on-surface focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 xl:min-w-[250px]"
             >
               {sortOptions.map((opt) => (
                 <option key={opt} value={opt}>
@@ -98,7 +137,7 @@ export function FilterBar() {
           </div>
           <button
             onClick={exportToJson}
-            className="inline-flex items-center gap-2 rounded-lg border border-outline-variant bg-surface px-4 py-2 text-sm font-medium text-on-surface transition-colors hover:bg-surface-container-high"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-outline-variant bg-surface px-4 py-2 text-sm font-medium text-on-surface transition-colors hover:bg-surface-container-high sm:col-span-2 xl:w-auto"
           >
             <Icon name="download" size={16} />
             {tActions("exportJson")}

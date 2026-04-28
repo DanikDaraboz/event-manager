@@ -15,7 +15,9 @@
     "searchPlaceholder": "Поиск событий…",
     "searchAriaLabel": "Поиск событий",
     "notifications": "Уведомления",
-    "language": "Язык"
+    "language": "Язык",
+    "switchToDark": "Переключить на темную тему",
+    "switchToLight": "Переключить на светлую тему"
   },
   "header": {
     "title": "Менеджер событий",
@@ -31,9 +33,14 @@
     "allEvents": "Все события",
     "favoritesTab": "Избранное",
     "viewAriaLabel": "Режим просмотра",
+    "layoutAriaLabel": "Макет списка событий",
     "category": "Категория",
     "status": "Статус",
     "all": "Все",
+    "layout": {
+      "grid": "Сетка",
+      "list": "Список"
+    },
     "sortAriaLabel": "Сортировка",
     "sortPrefix": "Сортировка",
     "sort": {

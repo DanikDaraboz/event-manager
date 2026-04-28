@@ -15,7 +15,9 @@
     "searchPlaceholder": "Іс-шараны іздеу…",
     "searchAriaLabel": "Іс-шараны іздеу",
     "notifications": "Хабарландырулар",
-    "language": "Тіл"
+    "language": "Тіл",
+    "switchToDark": "Қараңғы тақырыпқа ауыстыру",
+    "switchToLight": "Жарық тақырыпқа ауыстыру"
   },
   "header": {
     "title": "Іс-шаралар менеджері",
@@ -31,9 +33,14 @@
     "allEvents": "Барлығы",
     "favoritesTab": "Таңдаулылар",
     "viewAriaLabel": "Көрініс режимі",
+    "layoutAriaLabel": "Оқиғалар көрінісінің макеті",
     "category": "Санат",
     "status": "Күй",
     "all": "Барлығы",
+    "layout": {
+      "grid": "Тор",
+      "list": "Тізім"
+    },
     "sortAriaLabel": "Сұрыптау",
     "sortPrefix": "Сұрыптау",
     "sort": {
