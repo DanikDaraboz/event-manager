@@ -37,8 +37,8 @@
     "sortAriaLabel": "Sort by",
     "sortPrefix": "Sort",
     "sort": {
-      "dateDesc": "Date (newest first)",
-      "dateAsc": "Date (oldest first)",
+      "dateDesc": "Date (descending)",
+      "dateAsc": "Date (ascending)",
       "titleAsc": "Title (A–Z)",
       "titleDesc": "Title (Z–A)"
     }
