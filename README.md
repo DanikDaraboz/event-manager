@@ -3,7 +3,8 @@
 A small CRUD dashboard for managing events (conferences, webinars, meetings,
 workshops). Built as a frontend test task with **Next.js 16 (App Router) +
 TypeScript + Tailwind CSS v4**, custom UI (no third-party component
-libraries), and `localStorage`-backed persistence.
+libraries), `next-intl` internationalization, dark/light themes, and
+`localStorage`-backed event persistence.
 
 > Live data is stored only in the browser (`localStorage`) — there is no
 > backend. The first time you open the app it is seeded with mock events.
@@ -34,11 +35,12 @@ Requires Node.js 18.18+ (Next.js 16 requirement).
 ## Features
 
 ### Required
+
 - **Event list** rendered as cards with title, description, date/time, category
   and status badges.
 - **Add event** via a modal form with validation:
   - title is required (min 2 characters);
-  - date/time is required and a *Planned* event cannot be in the past
+  - date/time is required and a _Planned_ event cannot be in the past
     (Completed events may be in the past, since that's realistic).
 - **Edit event** — same modal, prefilled with existing values.
 - **Delete event** — destructive confirmation modal with the event preview.
@@ -51,10 +53,19 @@ Requires Node.js 18.18+ (Next.js 16 requirement).
   the filters.
 
 ### Optional / extra
+
 - **Search** events by title or description (live filtering).
-- **Favorites** — heart toggle on each card and a dedicated *Favorites* tab.
+- **Favorites** — heart toggle on each card and a dedicated _Favorites_ tab.
 - **Export to JSON** — downloads the full event list as
   `events-YYYY-MM-DD.json`.
+- **View modes** — switch between a two-column card grid and a compact
+  one-column list view on tablet/desktop.
+- **Animated layout switching** — event cards smoothly morph between grid and
+  list layouts using the View Transitions API with a safe fallback.
+- **Dark / light theme** — theme switcher with animated color transitions and
+  cookie-backed persistence across reloads.
+- **Internationalization** — English, Russian and Kazakh (`en`, `ru`, `kk`)
+  are stored in separate JSON message files.
 - **Toast notifications** for create / update / delete / export actions.
 - **Empty state** with a "Clear Filters" shortcut when no events match.
 - **Skeleton loading** while events hydrate from `localStorage`.
@@ -64,11 +75,13 @@ Requires Node.js 18.18+ (Next.js 16 requirement).
 ## Architecture
 
 ### Stack
+
 - **Next.js 16** with the App Router (Server + Client Components).
 - **React 19** (canary built into Next 16's App Router).
 - **TypeScript** with strict mode.
 - **Tailwind CSS v4** — design tokens defined in `app/globals.css` via
-  `@theme inline`. No third-party UI libraries.
+  `@theme`. Runtime color tokens power dark/light theme switching.
+- **next-intl** — JSON-based translations and server/client translation hooks.
 - **No external icon font / UI kit** — icons are inline SVGs in
   `app/components/Icon.tsx`.
 
@@ -76,7 +89,7 @@ Requires Node.js 18.18+ (Next.js 16 requirement).
 
 ```
 app/
-├─ layout.tsx           # Server Component — Inter font + global styles
+├─ layout.tsx           # Server — Inter font, i18n provider, theme cookie
 ├─ page.tsx             # Server Component — composes the shell
 ├─ globals.css          # Tailwind v4 theme + design tokens
 ├─ components/
@@ -84,11 +97,13 @@ app/
 │  ├─ Sidebar.tsx            # Server — fixed sidebar (lg+ only)
 │  ├─ TopBar.tsx             # Server — sticky header w/ search slot
 │  ├─ Icon.tsx               # Server — inline SVG icon set
+│  ├─ LocaleSwitcher.tsx     # Client — cookie-backed language switcher
+│  ├─ ThemeSwitcher.tsx      # Client — cookie-backed theme switcher
 │  ├─ EventsProvider.tsx     # Client — useReducer + Context for state
 │  ├─ EventDashboard.tsx     # Client — main interactive page body
 │  ├─ StatsCards.tsx         # Client — derived counts (total/planned/…)
 │  ├─ SearchInput.tsx        # Client — bound to provider's search filter
-│  ├─ FilterBar.tsx          # Client — tabs, category & status chips, sort
+│  ├─ FilterBar.tsx          # Client — tabs, chips, sort, layout mode
 │  ├─ EventCard.tsx          # Client — single event card
 │  ├─ EmptyState.tsx         # Client — "no events / no matches" UI
 │  ├─ Modal.tsx              # Client — accessible modal shell (ESC + backdrop)
@@ -101,9 +116,17 @@ app/
    ├─ storage.ts        # localStorage load/save + UUID generator
    ├─ dateUtils.ts      # Format ISO ↔ datetime-local + isPastDate
    └─ styleHelpers.ts   # Category & status badge class maps
+i18n/
+├─ config.ts            # Supported locales, default locale, cookie name
+└─ request.ts           # next-intl request config + cookie locale resolution
+messages/
+├─ en.json              # English UI strings
+├─ ru.json              # Russian UI strings
+└─ kk.json              # Kazakh UI strings
 ```
 
 The **Server / Client split** follows the Next.js App Router pattern:
+
 - `layout.tsx`, `page.tsx`, `AppShell`, `Sidebar`, `TopBar` and `Icon` are
   Server Components — they emit pure HTML, ship no JS.
 - Anything interactive (filters, modals, the events store) lives behind the
@@ -112,11 +135,13 @@ The **Server / Client split** follows the Next.js App Router pattern:
 ### State management
 
 A single React Context (`EventsProvider`) backed by `useReducer` holds:
+
 - the canonical list of events,
 - the current filter/sort/tab/search state,
 - ephemeral toast notifications.
 
 Why this approach:
+
 - The data graph is small and lives entirely in one tree — Redux/Zustand
   would be over-engineering.
 - `useReducer` keeps the CRUD transitions explicit and easy to test.
@@ -129,6 +154,9 @@ Why this approach:
   (`event-manager:events:v1`).
 - If nothing is stored, the seed `initialEvents` is used and saved.
 - After hydration, every event mutation is mirrored back to `localStorage`.
+- The selected locale is stored in the `NEXT_LOCALE` cookie.
+- The selected theme is stored in the `event-manager-theme` cookie and mirrored
+  to `localStorage` for client-side access.
 
 The hydration flag prevents SSR/CSR mismatches: the dashboard renders skeleton
 cards on the server, then swaps in the real list once the client has read
@@ -144,12 +172,66 @@ ARIA `aria-invalid` / `aria-describedby` are wired up for accessibility.
 
 ## Design
 
-The visual design is based on the Stitch concept stored in
-`stitch_event_manager_dashboard/` (see `event_management_system/DESIGN.md`).
-The Material 3-inspired token palette (indigo primary, teal secondary, soft
-surface tones) is reproduced in `app/globals.css` as Tailwind v4 theme
-variables, so utilities like `bg-primary`, `text-on-surface-variant`,
-`border-outline-variant` work out of the box.
+The visual direction follows the provided Stitch AI dashboard design: soft
+surface colors, rounded cards, compact controls, semantic status/category
+badges, and lightweight elevation. The implementation avoids third-party UI
+libraries; all controls, icons, modals, toasts and responsive behavior are
+custom-built with React and Tailwind utilities.
+
+---
+
+## Internationalization
+
+The project uses `next-intl` without locale-prefixed routes. Instead, the
+current locale is resolved from a cookie:
+
+- supported app locales: `en`, `ru`, `kk`;
+- default locale: `ru`;
+- message files live in `messages/*.json`;
+- server components use `getTranslations`;
+- client components use `useTranslations`;
+- changing language writes `NEXT_LOCALE` and calls `router.refresh()` so Server
+  Components re-render with the new messages.
+
+Kazakh uses the standard `kk` locale code. Event dates are displayed as
+`DD.MM.YYYY, HH:mm` via a local helper instead of localized month names because
+some browser builds can fall back to English for Kazakh `Intl.DateTimeFormat`
+data.
+
+---
+
+## Theme System
+
+The UI supports light and dark themes through CSS variables in
+`app/globals.css`.
+
+- Tailwind v4 tokens are declared with `@theme`, so utilities such as
+  `bg-surface` and `text-on-surface` resolve through runtime CSS variables.
+- Dark theme values are applied under `:root[data-theme="dark"]`.
+- `layout.tsx` reads the `event-manager-theme` cookie and renders
+  `data-theme` on `<html>` on the server, preventing hydration mismatches and
+  reload flicker.
+- `ThemeSwitcher` updates the cookie, `localStorage`, and `<html data-theme>`.
+- Theme animation is applied only for manual user-triggered changes via the
+  temporary `theme-transitioning` class, so reloads do not replay the animation.
+
+---
+
+## Layout, Responsiveness And Motion
+
+- Desktop uses a fixed sidebar and sticky top bar.
+- Tablet/mobile hide the sidebar, tighten the top bar, and show search above
+  the filters.
+- Stats cards adapt from one column on narrow screens to four columns on large
+  screens.
+- Filters stack on mobile/tablet; export and sort controls become full-width
+  where needed.
+- Event view mode switching is hidden on mobile and available from `md+`.
+- Event cards support:
+  - **Grid mode**: two-column card layout on desktop/tablet.
+  - **List mode**: compact one-column row layout on wider screens.
+- Layout mode changes use the View Transitions API so cards visibly move and
+  morph between positions. Browsers without support simply switch instantly.
 
 ---
 
